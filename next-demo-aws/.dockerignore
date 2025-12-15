@@ -1,0 +1,10 @@
+# Exclude development/generated folders
+node_modules
+.next
+
+# Exclude version control and editor files
+.git
+.gitignore
+.env
+.vscode
+npm-debug.log
