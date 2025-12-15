@@ -1,6 +1,6 @@
 services:
   next-demo:
-    image: replace
+    image: dockermathilde/next-demo-aws:sha-0423f72
     ports:
       - "3000:3000"
     environment:
