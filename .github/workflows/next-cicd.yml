@@ -5,6 +5,7 @@ on:
     branches:
       - main
       - dev
+      - wayne
     paths:
       - "next-demo-aws/**"
       - ".github/workflows/next-cicd.yml"
