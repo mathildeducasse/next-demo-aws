@@ -16,7 +16,7 @@ export default async function BooksPage() {
   return (
     <div>
       <h1>Books</h1>
-      <Link href="/books/new">Add New</Link>
+      <Link href="/books/add">Add New</Link>
       <ul>
         {books.map(book => (
           <li key={book.id}>
