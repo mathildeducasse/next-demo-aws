@@ -5,6 +5,7 @@ import { randomUUID } from "crypto";
 import { createBook, getBooks } from "@/lib/db";
 import { createBookSchema } from "@/validators/book.schema";
 import { toBookResponse } from "@/lib/book.mapper";
+import { CreateBookDto } from "@/dtos/book/create-book.dto";
 
 export async function GET() {
   const books = getBooks();
@@ -12,7 +13,8 @@ export async function GET() {
 }
 
 export async function POST(req: Request) {
-  const json = await req.json();
+  // Use the DTO to type the parsed JSON
+  const json: CreateBookDto = await req.json();
 
   const parsed = createBookSchema.safeParse(json);
   if (!parsed.success) {

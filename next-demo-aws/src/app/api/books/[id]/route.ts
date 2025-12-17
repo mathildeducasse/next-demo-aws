@@ -1,44 +1,61 @@
 // GET + PUT + DELETE by id route handlers
 
 import { NextResponse } from "next/server";
-import {
-  getBook,
-  updateBook,
-  deleteBook,
-} from "@/lib/db";
+import { getBook, updateBook, deleteBook } from "@/lib/db";
+import { toBookResponse } from "@/lib/book.mapper";
+import { updateBookSchema } from "@/validators/book.schema";
+import { UpdateBookDto } from "@/dtos/book/update-book.dto";
+
+type RouteContext = { params: Promise<{ id: string }> };
 
 export async function GET(
   _: Request,
-  { params }: { params: { id: string } }
+  { params }: RouteContext
 ) {
-  const book = getBook(params.id);
+  const { id } = await params;
+  const book = getBook(id);
+
   if (!book) {
-    return NextResponse.json({}, { status: 404 });
+    return NextResponse.json({ message: "Book not found" }, { status: 404 });
   }
-  return NextResponse.json(book);
+
+  return NextResponse.json(toBookResponse(book));
 }
 
 export async function PUT(
   req: Request,
-  { params }: { params: { id: string } }
+  { params }: RouteContext
 ) {
-  const data = await req.json();
-  const updated = updateBook(params.id, data);
+  const { id } = await params;
+  const json: UpdateBookDto = await req.json();
 
-  if (!updated) {
-    return NextResponse.json({}, { status: 404 });
+  const parsed = updateBookSchema.safeParse(json);
+  if (!parsed.success) {
+    return NextResponse.json(
+      { errors: parsed.error.format() },
+      { status: 400 }
+    );
   }
 
-  return NextResponse.json(updated);
+  const updated = updateBook(id, parsed.data);
+
+  if (!updated) {
+    return NextResponse.json({ message: "Book not found" }, { status: 404 });
+  }
+
+  return NextResponse.json(toBookResponse(updated));
 }
 
 export async function DELETE(
   _: Request,
-  { params }: { params: { id: string } }
+  { params }: RouteContext
 ) {
-  const removed = deleteBook(params.id);
+  const { id } = await params;
+  const removed = deleteBook(id);
+
   if (!removed) {
-    return NextResponse.json({}, { status: 404 });
+    return NextResponse.json({ message: "Book not found" }, { status: 404 });
   }
-  return NextResponse.json({}, { status: 204 });
+
+  return new NextResponse(null, { status: 204 });
 }
