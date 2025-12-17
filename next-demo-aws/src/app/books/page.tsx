@@ -14,13 +14,19 @@ export default async function BooksPage() {
   const books = await getBooks();
 
   return (
-    <div>
-      <h1>Books</h1>
-      <Link href="/books/add">Add New</Link>
-      <ul>
+    /* Add these Tailwind classes to the container */
+    <div className="min-h-screen bg-white p-8 text-black dark:bg-black dark:text-white">
+      <h1 className="text-2xl font-bold mb-4">Books</h1>
+      <Link 
+        href="/books/add" 
+        className="inline-block mb-6 rounded bg-blue-600 px-4 py-2 text-white hover:bg-blue-700"
+      >
+        Add New
+      </Link>
+      <ul className="space-y-2">
         {books.map(book => (
-          <li key={book.id}>
-            <Link href={`/books/${book.id}`}>
+          <li key={book.id} className="border-b pb-2">
+            <Link href={`/books/${book.id}`} className="hover:text-blue-600">
               {book.title} — {book.author}
             </Link>
           </li>
