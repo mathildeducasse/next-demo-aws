@@ -2,9 +2,14 @@
 
 import { NextResponse } from "next/server";
 import { randomUUID } from "crypto";
-import { createBook } from "@/lib/db";
+import { createBook, getBooks } from "@/lib/db";
 import { createBookSchema } from "@/validators/book.schema";
 import { toBookResponse } from "@/lib/book.mapper";
+
+export async function GET() {
+  const books = getBooks();
+  return NextResponse.json(books.map(toBookResponse));
+}
 
 export async function POST(req: Request) {
   const json = await req.json();
