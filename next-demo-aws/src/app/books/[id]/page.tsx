@@ -4,7 +4,7 @@
 
 import { useEffect, useState } from "react";
 import { useRouter, useParams } from "next/navigation";
-import { Book } from "@/types/book";
+import { Book } from "@/lib/book";
 
 export default function BookPage() {
   const { id } = useParams<{ id: string }>();

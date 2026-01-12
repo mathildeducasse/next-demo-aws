@@ -1,7 +1,7 @@
 // frontend page to list books
 
 import Link from "next/link";
-import { Book } from "@/types/book";
+import { Book } from "@/lib/book";
 
 async function getBooks(): Promise<Book[]> {
   const res = await fetch("http://localhost:3000/api/books", {

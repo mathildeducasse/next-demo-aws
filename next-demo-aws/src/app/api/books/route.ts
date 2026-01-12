@@ -1,14 +1,20 @@
 // GET + POST route handlers
 
 import { NextResponse } from "next/server";
-import { randomUUID } from "crypto";
-import { createBook, getBooks } from "@/lib/db";
+import { getDataSource } from "@/lib/database";
+import { Book } from "@/lib/book";
 import { createBookSchema } from "@/validators/book.schema";
 import { toBookResponse } from "@/lib/book.mapper";
 import { CreateBookDto } from "@/dtos/book/create-book.dto";
 
+async function getRepo() {
+  const dataSource = await getDataSource();
+  return dataSource.getRepository(Book);
+}
+
 export async function GET() {
-  const books = getBooks();
+  const repository = await getRepo();
+  const books = await repository.find(); // TypeORLM find all
   return NextResponse.json(books.map(toBookResponse));
 }
 
@@ -24,11 +30,10 @@ export async function POST(req: Request) {
     );
   }
 
-  const book = createBook({
-    id: randomUUID(),
-    ...parsed.data,
-    createdAt: new Date(),
-  });
+  const repository = await getRepo();
 
-  return NextResponse.json(toBookResponse(book), { status: 201 });
+  const newBook = repository.create(parsed.data);
+  const savedBook = await repository.save(newBook);
+
+  return NextResponse.json(toBookResponse(savedBook), { status: 201 });
 }
