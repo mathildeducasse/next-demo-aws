@@ -6,8 +6,8 @@ const AppDataSource = new DataSource({
   type: "postgres",
   host: process.env.DB_HOST || "localhost",
   port: 5432,
-  username: process.env.DB_USER || "wayne",
-  password: process.env.DB_PASSWORD || "",
+  username: process.env.DB_USER || "postgres",
+  password: process.env.DB_PASSWORD || "password",
   database: "wayne",
   synchronize: true, // Set to false in production
   logging: true,

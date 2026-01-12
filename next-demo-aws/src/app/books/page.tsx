@@ -2,16 +2,15 @@
 
 import Link from "next/link";
 import { Book } from "@/lib/book";
-
-async function getBooks(): Promise<Book[]> {
-  const res = await fetch("http://localhost:3000/api/books", {
-    cache: "no-store",
-  });
-  return res.json();
-}
+import { getDataSource } from "@/lib/database";
+import { toBookResponse } from "@/lib/book.mapper";
 
 export default async function BooksPage() {
-  const books = await getBooks();
+  try {
+    const dataSource = await getDataSource();
+    const repository = dataSource.getRepository(Book);
+    const rawBooks = await repository.find();
+    const books = rawBooks.map(toBookResponse);
 
   return (
     /* Add these Tailwind classes to the container */
@@ -34,4 +33,11 @@ export default async function BooksPage() {
       </ul>
     </div>
   );
+ } catch (error) {
+  console.error("Error fetching books:", error);
+  return <div className="min-h-screen bg-white p-8 text-black dark:bg-black dark:text-white">
+    <h1 className="text-2xl font-bold mb-4">Books</h1>
+    <p className="text-red-600">Failed to load books. Please try again later.</p>
+  </div>;
+ }
 }
